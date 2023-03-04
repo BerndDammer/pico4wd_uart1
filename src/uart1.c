@@ -7,6 +7,7 @@
 #include "hardware/irq.h"
 
 #include "uart1.h"
+#include "secret.h"
 
 #define FAIL while(true);
 
