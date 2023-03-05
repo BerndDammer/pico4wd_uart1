@@ -14,13 +14,12 @@
 #include "loop.h"
 #include "blinker.h"
 #include "uart1.h"
-#include "secret.h"
+
+#include "parameter.h"
 
 #include <stdio.h>
+#include <string.h>
 #include "pico/stdlib.h"
-//#include "hardware/timer.h"
-//#include "hardware/watchdog.h"
-//#include "hardware/clocks.h"
 
 #include <time.h>
 #include <stdlib.h>
@@ -59,10 +58,17 @@ void menu(void)
     printf("  WS+{\"value\": 25}\n");
     printf("h SET+MUELL\n");
     printf("l SET+LED1\n");
+    printf("p show parameter\n");
     printf("z SET+RESET: reset esp8266\n");
     printf("0 space all off\n");
     printf("press key to select\n");
     printf("------------------------------------\n");
+}
+
+void showPara(void)
+{
+    printf("Parameter SSID:%s\n", PARA_SSID);
+    printf("Parameter  PWD:%s\n", PARA_PWD);
 }
 
 void loop(void)
@@ -71,6 +77,7 @@ void loop(void)
     volatile int c;
     menu();
     uart1_init();
+    unsigned char buffer[150];
 
     for (;;)
     {
@@ -99,10 +106,18 @@ void loop(void)
                 uart1_outs("AT+CMD\n");
                 break;
             case 'a':
-                uart1_outs("SET+SSID" MY_SSID "\012"); // Backslash newline does not work here
+                //uart1_outs("SET+SSID" MY_SSID "\012"); // Backslash newline does not work here
+                strcpy(buffer, "SET+SSID");
+                strcat(buffer, PARA_SSID);
+                strcat(buffer, "\n");
+                uart1_outs(buffer);
                 break;
             case 'b':
-                uart1_outs("SET+PSK" MY_PWD "\012");
+                //uart1_outs("SET+PSK" MY_PWD "\012");
+                strcpy(buffer, "SET+PSK");
+                strcat(buffer, PARA_PWD);
+                strcat(buffer, "\n");
+                uart1_outs(buffer);
                 break;
             case 'c':
                 uart1_outs("SET+PORT8765\n");
@@ -125,6 +140,9 @@ void loop(void)
             case 'l':
                 uart1_outs("SET+LED1\n");
                 break;
+            case 'p':
+                showPara();
+                break;
             case 's':
                 transmitter_on = !transmitter_on;
                 puts(transmitter_on ? "On\n" : "Off\n");
@@ -142,3 +160,4 @@ void loop(void)
         }
     }
 }
+
