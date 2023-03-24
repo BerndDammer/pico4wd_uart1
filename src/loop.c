@@ -46,6 +46,9 @@ void menu(void)
     printf("1 AT\n");
     printf("2 AT+GMR\n");
     printf("3 AT+CMD\n");
+    printf("4 AT+GMR 015 012\n");
+    printf("5 AT+RST 015 012\n");
+    printf("6 ATE1 015 012\n");
     printf("------------------------\n");
     printf("a SET+SSID<ssid>\n");
     printf("b SET+PSK<password>\n");
@@ -104,6 +107,14 @@ void loop(void)
                 break;
             case '3':
                 uart1_outs("AT+CMD\n");
+            case '4':
+                uart1_outs("AT+GMR\015\012");
+                break;
+            case '5':
+                uart1_outs("AT+RST\015\012");
+                break;
+            case '6':
+                uart1_outs("ATE1\015\012");
                 break;
             case 'a':
                 //uart1_outs("SET+SSID" MY_SSID "\012"); // Backslash newline does not work here
